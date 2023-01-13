@@ -9,10 +9,8 @@ module.exports = router;
 router.post("/", async (req, res) => {
   try {
     const data = { ...req.body, location: "sent" };
-    console.log(data);
     const message = new Message(data);
     const newMessage = await message.save();
-
     res
       .status(201)
       .json({ message: "Message sent successfully", data: newMessage });
@@ -24,9 +22,24 @@ router.post("/", async (req, res) => {
 router.get("/:email", async (req, res) => {
   try {
     const email = req.params.email;
-    console.log(email);
     const messages = await Message.find({ from: email });
-    res.status(200).json({ data: messages });
+
+    const totalMessages = messages.length;
+    const inboxCount = (await Message.find({ from: email, location: "inbox" }))
+      .length;
+    const trashCount = (await Message.find({ from: email, location: "trash" }))
+      .length;
+    const sentCount = (await Message.find({ from: email, location: "sent" }))
+      .length;
+
+    const analytics = {
+      inboxCount,
+      sentCount,
+      trashCount,
+      totalMessages
+    };
+
+    res.status(200).json({ data: { messages, analytics } });
   } catch (error) {
     res.status(400).json({ error });
   }
@@ -44,5 +57,15 @@ router.patch("/:messageId", async (req, res) => {
     res.status(200).json({ message: "Status changed", data: updatedMessage });
   } catch (error) {
     res.status(400).json({ error });
+  }
+});
+
+router.delete("/:messageId", async (req, res) => {
+  try {
+    const messageId = req.params.messageId;
+    await Message.findByIdAndDelete(messageId);
+    res.status(200).json({ message: "Deleted successful" });
+  } catch (error) {
+    res.status(400).json({ message: "An error occurred", error });
   }
 });

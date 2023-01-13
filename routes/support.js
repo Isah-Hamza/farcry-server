@@ -11,6 +11,38 @@ router.get("/", async (req, res) => {
   }
 });
 
+router.get("/:email", async (req, res) => {
+  const email = req.params.email;
+  try {
+    const supports = await Support.find({ email });
+    const allCount = (await Support.find({ email })).length;
+
+    const pendingCount = (await Support.find({ email, status: "pending" }))
+      .length;
+    const verifiedCount = (await Support.find({ email, status: "verified" }))
+      .length;
+    const inProgressCount = (
+      await Support.find({ email, status: "in-progress" })
+    ).length;
+    const completedCount = (await Support.find({ email, status: "completed" }))
+      .length;
+
+    // const allCount = reports.length;
+
+    const analytics = {
+      pendingCount,
+      allCount,
+      verifiedCount,
+      inProgressCount,
+      completedCount
+    };
+
+    res.status(200).json({ data: { supports, analytics } });
+  } catch (error) {
+    res.status(400).json({ error });
+  }
+});
+
 router.post("/", async (req, res) => {
   try {
     const data = {
@@ -34,7 +66,11 @@ router.post("/", async (req, res) => {
 router.patch("/:id", async (req, res) => {
   try {
     const id = req.params.id;
-    const support = await Support.findByIdAndUpdate(id, { ...req.body }, { new: true });
+    const support = await Support.findByIdAndUpdate(
+      id,
+      { ...req.body },
+      { new: true }
+    );
     res.status(200).json({ message: "updated successfull", data: support });
   } catch (error) {
     res.status(400).json({ error });

@@ -8,12 +8,9 @@ const messageSchema = mongoose.Schema(
       type: String,
       required: true
     },
-    location: {
-      type: String,
-    //   default: "sent"
-    }
+    location: String,
   },
   { timestamps: true }
 );
 
-module.exports = mongoose.model('Message', messageSchema)
+module.exports = mongoose.model("Message", messageSchema);

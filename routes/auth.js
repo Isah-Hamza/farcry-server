@@ -3,7 +3,7 @@ const router = express.Router();
 const { hashPassword, comparePassword } = require("../utilities/functions");
 const User = require("../models/user");
 
-router.get("", (req, res) => res.send("Hi auth"));
+router.get("/", (req, res) => res.send("Hi auth"));
 
 router.post("/login", async (req, res) => {
   const users = await User.find();
@@ -19,7 +19,7 @@ router.post("/login", async (req, res) => {
   if (await comparePassword(req.body.password, user.password)) {
     return res.status(200).json({ user, message: "login successful" });
   } else {
-    return res.status(400).json({ message: "Incorrect password" });
+    return res.status(400).json({ message: "Incorrect password"});
   }
 });
 
