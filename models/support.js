@@ -35,7 +35,9 @@ const supportSchema = mongoose.Schema(
     },
     assigned_body: {
       name: String,
-      address: String
+      address: String,
+      description: String,
+      email: String
     }
   },
   { timestamps: true }

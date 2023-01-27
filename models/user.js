@@ -21,7 +21,11 @@ const userSchema = new mongoose.Schema(
     password: {
       type: String,
       required: true
-    }
+    },
+    gender: String,
+    occupation: String,
+    marital_status: String,
+    address: String
   },
   { timestamps: true }
 );

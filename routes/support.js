@@ -11,6 +11,16 @@ router.get("/", async (req, res) => {
   }
 });
 
+router.get("/:id/details", async (req, res) => {
+  const id = req.params.id;
+  try {
+    const support = await Support.findById(id);
+    res.status(200).json({ data: support });
+  } catch (error) {
+    res.status(400).json({ error });
+  }
+});
+
 router.get("/:email", async (req, res) => {
   const email = req.params.email;
   try {
